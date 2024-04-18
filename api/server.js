@@ -1,17 +1,23 @@
 const express = require('express');
-const router = express.Router();
+const server = express();
 
-// Import database functions for interacting with the database
-const {
-  addResource,
-  getResources,
-  addProject,
-  getProjects,
-  addTask,
-  getTasks
-} = require('../data/dbConfig');
+// Import routers
+const projectRouter = require('./project/router');
+const tasksRouter = require('./task/router');
+const resourcesRouter = require('./resource/router');
 
-// Define routes using router
-// ...
+// Setup
+server.use(express.json());
 
-module.exports = router;
+// Error handling middleware
+server.use("*", (err, req, res, next) => {
+  console.error(err);
+  next();
+});
+
+// Initialize routers
+server.use('/api/tasks', tasksRouter);
+server.use('/api/projects', projectRouter);
+server.use('/api/resources', resourcesRouter);
+
+module.exports = server;
